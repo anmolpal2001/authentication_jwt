@@ -1,19 +1,23 @@
-
 // Import express
+const path = require('path');
 const express = require('express');
-const app = express();
-
-require('dotenv').config();
-const PORT = process.env.PORT || 4000;
-
 const cookieParser = require('cookie-parser');
-app.use(cookieParser());
-
-app.use(express.json());
-
+require('dotenv').config();
 // Connect to database
 const connectDB = require('./config/database');
 connectDB();    
+const app = express();
+const _dirname = path.resolve();
+app.use(express.static(path.join(_dirname, '/client/dist')));
+
+app.get("*",(req,res) => {
+    res.sendFile(path.join(_dirname, 'client','dist','index.html'));
+});
+
+app.use(cookieParser());
+app.use(express.json());
+const PORT = process.env.PORT || 4000;
+
 
 // import routes and mount them
 const user = require('./routes/user');
